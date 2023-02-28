@@ -1,4 +1,5 @@
-﻿@model ASP_Meeting_18.Data.Category
+﻿@*@model ASP_Meeting_18.Data.Category*@
+@model DeleteCategoryViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -12,22 +13,22 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Category.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Category.Title)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ParentCategory)
+            @Html.DisplayNameFor(model => model.Category.ParentCategory)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ParentCategory.Title)
+            @Html.DisplayFor(model => model.Category.ParentCategory!.Title)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Category.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" class="btn btn-sm btn-outline-primary">Back to List</a>
     </form>
 </div>

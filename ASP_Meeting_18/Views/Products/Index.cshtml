@@ -1,43 +1,53 @@
-﻿@model IEnumerable<ASP_Meeting_18.Data.Product>
+﻿@*@model IEnumerable<ASP_Meeting_18.Data.Product>*@
+@model IndexProductViewModel
 
 @{
     ViewData["Title"] = "Index";
+}
+@section Styles{
+    <style>
+        img{
+            width: 100px;
+            object-fit: cover;
+        }
+    </style>
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-sm btn-outline-primary">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Products.FirstOrDefault()!.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.Products.FirstOrDefault()!.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Count)
+                @Html.DisplayNameFor(model => model.Products.FirstOrDefault()!.Count)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
+                @Html.DisplayNameFor(model => model.Products.FirstOrDefault()!.Category)
             </th>
              <th>
-                @Html.DisplayNameFor(model => model.Photos)
+                @Html.DisplayNameFor(model => model.Products.FirstOrDefault()!.Photos)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Products) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
+                <span>&nbsp;&#x20AC;</span>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Count)
@@ -46,12 +56,12 @@
                 @Html.DisplayFor(modelItem => item.Category!.Title)
             </td>
             <td>
-               <img src="@item.Photos.FirstOrDefault()!.PhotoUrl" alt="@item.Photos.FirstOrDefault()!.Filename"/>
+               <img src="@item.Photos!.FirstOrDefault()!.PhotoUrl" alt="@item.Photos!.FirstOrDefault()!.Filename"/>
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
             </td>
         </tr>
 }

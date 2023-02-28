@@ -26,10 +26,27 @@ namespace ASP_Meeting_18.Controllers.Admin
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId)
         {
-            var shopDbContext = _context.Products.Include(p => p.Category).Include(t=>t.Photos);
-            return View(await shopDbContext.ToListAsync());
+            //var shopDbContext = _context.Products.Include(p => p.Category).Include(t=>t.Photos);
+            //return View(await shopDbContext.ToListAsync());
+
+            IQueryable<Product> products = _context.Products
+                .Include(p => p.Category)
+                .Include(t => t.Photos);
+            IQueryable<Category> categories = _context.Categories;
+            SelectList categorySL = new SelectList(
+                await categories.ToListAsync(),
+                dataValueField: nameof(Category.Id),
+                dataTextField: nameof(Category.Title),
+                selectedValue: categoryId);
+            IndexProductViewModel vm = new IndexProductViewModel
+            {
+                Products = products,
+                CategorySL = categorySL,
+                CategoryId = categoryId
+            };
+            return View(vm);
         }
 
         // GET: Products/Details/5
@@ -42,13 +59,18 @@ namespace ASP_Meeting_18.Controllers.Admin
 
             var product = await _context.Products
                 .Include(p => p.Category)
+                .Include(t => t.Photos)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
+            DetailsProductViewModel vm = new DetailsProductViewModel
+            {
+                Product = product
+            };
 
-            return View(product);
+            return View(vm);
         }
 
         // GET: Products/Create
@@ -84,7 +106,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             _context.Add(vm.Product);
             await _context.SaveChangesAsync();
 
-            foreach (var filePath in vm.Photos)
+            foreach (var filePath in vm.Photos!)
             {
                 if (filePath != null && filePath.Length > 0)
                 {
@@ -174,13 +196,18 @@ namespace ASP_Meeting_18.Controllers.Admin
 
             var product = await _context.Products
                 .Include(p => p.Category)
+                .Include(f => f.Photos)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
+            DeleteProductModelView vm = new DeleteProductModelView
+            {
+                Product = product
+            };
 
-            return View(product);
+            return View(vm);
         }
 
         // POST: Products/Delete/5

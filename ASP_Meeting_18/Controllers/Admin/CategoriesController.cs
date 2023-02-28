@@ -7,23 +7,40 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ASP_Meeting_18.Data;
 using ASP_Meeting_18.Models.ViewModels.AdminViewModels.CategoryViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace ASP_Meeting_18.Controllers.Admin
 {
     public class CategoriesController : Controller
     {
         private readonly ShopDbContext _context;
+        private readonly ILogger _logger;
 
-        public CategoriesController(ShopDbContext context)
+        public CategoriesController(ShopDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
+            _logger = loggerFactory.CreateLogger<CategoriesController>();
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(/*int? parentCategoryId*/)
         {
             var shopDbContext = _context.Categories.Include(c => c.ParentCategory);
             return View(await shopDbContext.ToListAsync());
+            //IQueryable<Category> categories = _context.Categories
+            //    .Include(c => c.ParentCategory)
+            //    .Where(p => p.ParentCategoryId == null || p.ParentCategoryId == parentCategoryId);
+            //SelectList parentCategorySL = new(await _context.Categories.ToListAsync(),
+            //    nameof(Category.Id),
+            //    nameof(Category.Title),
+            //    parentCategoryId);
+            //IndexCategoryViewModel vm = new IndexCategoryViewModel
+            //{
+            //    Categories = categories,
+            //    ParentCategorySL = parentCategorySL,
+            //    ParentCategoryId = parentCategoryId
+            //};
+            //return View(vm);
         }
 
         // GET: Categories/Details/5
@@ -41,8 +58,12 @@ namespace ASP_Meeting_18.Controllers.Admin
             {
                 return NotFound();
             }
+            DetailsCategoryViewModel vm = new DetailsCategoryViewModel()
+            {
+                Category = category
+            };
 
-            return View(category);
+            return View(vm);
         }
 
         // GET: Categories/Create
@@ -57,16 +78,38 @@ namespace ASP_Meeting_18.Controllers.Admin
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ParentCategoryId")] Category category)
+        //public async Task<IActionResult> Create([Bind("Id,Title,ParentCategoryId")] Category category)
+        public async Task<IActionResult> Create(CreateCategoryViewModel vm)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(category);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //ViewData["ParentCategoryId"] = new SelectList(_context.Categories, "Id", "Title", category.ParentCategoryId);
+            //return View(category);
+
+            if (!ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                SelectList parentCategoty = new(await _context.Categories.ToListAsync(),
+                    nameof(Category.Id),
+                    nameof(Category.Title),
+                    vm.ParentCategoryId);
+                foreach (var error in ModelState.Values.SelectMany(t => t.Errors))
+                {
+                    _logger.LogError(error.ErrorMessage);
+                }
+                return View(vm);
             }
-            ViewData["ParentCategoryId"] = new SelectList(_context.Categories, "Id", "Title", category.ParentCategoryId);
-            return View(category);
+            var category = new Category
+            {
+                Title = vm.Title,
+                ParentCategoryId = vm.ParentCategoryId
+            };
+            _context.Add(category);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: Categories/Edit/5
@@ -137,8 +180,12 @@ namespace ASP_Meeting_18.Controllers.Admin
             {
                 return NotFound();
             }
+            var vm = new DeleteCategoryViewModel()
+            {
+                Category = category
+            };
 
-            return View(category);
+            return View(vm);
         }
 
         // POST: Categories/Delete/5
