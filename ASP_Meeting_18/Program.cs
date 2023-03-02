@@ -1,10 +1,14 @@
 
+using ASP_Meeting_18.AutoMapperProfiles;
 using ASP_Meeting_18.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+builder.Services.AddAutoMapper(typeof(CategoryProfile));
+builder.Services.AddAutoMapper(typeof(ProductProfile));
+//builder.Services.AddAutoMapper(typeof(PhotoProfile));
 builder.Services.AddControllersWithViews();
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ShopDbContext>();

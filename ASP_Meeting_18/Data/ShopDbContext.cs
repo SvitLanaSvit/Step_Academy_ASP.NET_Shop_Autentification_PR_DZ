@@ -17,6 +17,8 @@ namespace ASP_Meeting_18.Data
             Database.EnsureCreated();
         }
 
+        public DbSet<ASP_Meeting_18.Models.DTOs.UserDTOs.UserDTO> UserDTO { get; set; }
+
         //public DbSet<ASP_Meeting_18.Models.DTOs.UserDTOs.EditUserDTO> EditUserDTO { get; set; }
 
         //public DbSet<ASP_Meeting_18.Models.DTOs.UserDTOs.ChangePasswordDTO> ChangePasswordDTO { get; set; }

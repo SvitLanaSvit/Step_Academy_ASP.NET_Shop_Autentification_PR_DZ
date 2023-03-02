@@ -9,6 +9,9 @@ using ASP_Meeting_18.Data;
 using Microsoft.Extensions.Hosting;
 using ASP_Meeting_18.Models.ViewModels.AdminViewModels.ProductViewModels;
 using System.Drawing.Drawing2D;
+using ASP_Meeting_18.Models.DTOs.ProductDTOs;
+using AutoMapper;
+using ASP_Meeting_18.Models.DTOs.CategoryDTOs;
 
 namespace ASP_Meeting_18.Controllers.Admin
 {
@@ -17,12 +20,17 @@ namespace ASP_Meeting_18.Controllers.Admin
         private readonly ShopDbContext _context;
         private readonly ILogger _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IMapper _mapper;
 
-        public ProductsController(ShopDbContext context, ILoggerFactory loggerFactory, IWebHostEnvironment environment)
+        public ProductsController(ShopDbContext context, 
+            ILoggerFactory loggerFactory, 
+            IWebHostEnvironment environment,
+            IMapper mapper)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger<ProductsController>();
             _environment = environment;
+            _mapper = mapper;
         }
 
         // GET: Products
@@ -35,14 +43,20 @@ namespace ASP_Meeting_18.Controllers.Admin
                 .Include(p => p.Category)
                 .Include(t => t.Photos);
             IQueryable<Category> categories = _context.Categories;
+
+            IEnumerable<ProductDTO> tempProduct = 
+                _mapper.Map<IEnumerable<ProductDTO>>(await products.ToListAsync());
+            IEnumerable<CategoryDTO> tempCategory = 
+                _mapper.Map<IEnumerable<CategoryDTO>>(await categories.ToListAsync());
+
             SelectList categorySL = new SelectList(
-                await categories.ToListAsync(),
+                tempCategory,
                 dataValueField: nameof(Category.Id),
                 dataTextField: nameof(Category.Title),
                 selectedValue: categoryId);
             IndexProductViewModel vm = new IndexProductViewModel
             {
-                Products = products,
+                Products = tempProduct,
                 CategorySL = categorySL,
                 CategoryId = categoryId
             };
@@ -67,7 +81,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             }
             DetailsProductViewModel vm = new DetailsProductViewModel
             {
-                Product = product
+                Product = _mapper.Map<ProductDTO>(product),
             };
 
             return View(vm);
@@ -91,7 +105,7 @@ namespace ASP_Meeting_18.Controllers.Admin
         {
             if (!ModelState.IsValid)
             {
-                SelectList categorySL = new (await _context.Categories.ToListAsync(),
+                SelectList categorySL = new(await _context.Categories.ToListAsync(),
                     nameof(Category.Id),
                     nameof(Category.Title),
                     vm.Product.CategoryId);
@@ -204,7 +218,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             }
             DeleteProductModelView vm = new DeleteProductModelView
             {
-                Product = product
+                Product = _mapper.Map<ProductDTO>(product)
             };
 
             return View(vm);

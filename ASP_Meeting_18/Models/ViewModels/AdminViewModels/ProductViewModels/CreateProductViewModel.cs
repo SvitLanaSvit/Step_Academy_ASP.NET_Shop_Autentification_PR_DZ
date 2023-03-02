@@ -1,4 +1,5 @@
 ﻿using ASP_Meeting_18.Data;
+using ASP_Meeting_18.Models.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASP_Meeting_18.Models.ViewModels.AdminViewModels.ProductViewModels

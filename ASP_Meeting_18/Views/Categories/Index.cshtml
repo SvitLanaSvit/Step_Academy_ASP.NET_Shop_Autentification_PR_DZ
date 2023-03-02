@@ -1,5 +1,5 @@
-﻿@model IEnumerable<ASP_Meeting_18.Data.Category>
-@*@model IndexCategoryViewModel*@
+﻿@*@model IEnumerable<ASP_Meeting_18.Data.Category>*@
+@model IndexCategoryViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -14,18 +14,18 @@
     <thead>
         <tr>
             <th>
-                @*@Html.DisplayNameFor(model => model.Categories.FirstOrDefault()!.Title)*@
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Categories.FirstOrDefault()!.Title)
+                @*@Html.DisplayNameFor(model => model.Title)*@
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.Categories.FirstOrDefault()!.ParentCategory)*@
-                @Html.DisplayNameFor(model => model.ParentCategory)
+                @Html.DisplayNameFor(model => model.Categories.FirstOrDefault()!.ParentCategory)
+                @*@Html.DisplayNameFor(model => model.ParentCategory)*@
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Categories) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
