@@ -1,7 +1,9 @@
 ﻿using ASP_Meeting_18.Data;
 using ASP_Meeting_18.Models.ViewModels.AccountViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ASP_Meeting_18.Controllers
 {
@@ -81,6 +83,93 @@ namespace ASP_Meeting_18.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        public IActionResult GoogleAuth()
+        {
+            string? redirectUrl = Url.Action("GoogleRedirect", "Account");
+            var properties = signInManager
+                .ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return new ChallengeResult("Google", properties);
+        }
+
+        [AllowAnonymous]
+        public IActionResult FbAuth()
+        {
+            string? redirectUrl = Url.Action("FacebookRedirect", "Account");
+            var properties = signInManager
+                .ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            return new ChallengeResult("Facebook", properties);
+        }
+
+        public async Task<IActionResult> GoogleRedirect()
+        {
+            ExternalLoginInfo loginInfo = await signInManager.GetExternalLoginInfoAsync();
+            if (loginInfo == null) return RedirectToAction("Login");
+            var loginResult = await signInManager.ExternalLoginSignInAsync(
+                loginInfo.LoginProvider,
+                loginInfo.ProviderKey,
+                false);
+            string?[] userInfo =
+            {
+                loginInfo.Principal.FindFirst(ClaimTypes.Name)?.Value,
+                loginInfo.Principal.FindFirst(ClaimTypes.Email)?.Value
+            };
+            if(loginResult.Succeeded)
+            {
+                return View(userInfo);
+            }
+            User user = new User { UserName = userInfo[1], Email = userInfo[1] };
+            var result = await userManager.CreateAsync(user);
+            if(result.Succeeded)
+            {
+                result = await userManager.AddLoginAsync(user, loginInfo);
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    return View(userInfo);
+                }
+                
+            }
+            return RedirectToAction(nameof(AccessDenied));
+        }
+
+        public async Task<IActionResult> FacebookRedirect()
+        {
+            ExternalLoginInfo loginInfo = await signInManager.GetExternalLoginInfoAsync();
+            if (loginInfo == null) return RedirectToAction("Login");
+            var loginResult = await signInManager.ExternalLoginSignInAsync(
+                loginInfo.LoginProvider,
+                loginInfo.ProviderKey,
+                false);
+            string?[] userInfo =
+            {
+                loginInfo.Principal.FindFirst(ClaimTypes.Name)?.Value,
+                loginInfo.Principal.FindFirst(ClaimTypes.Email)?.Value
+            };
+            if (loginResult.Succeeded)
+            {
+                return View(userInfo);
+            }
+            User user = new User { UserName = userInfo[1], Email = userInfo[1] };
+            var result = await userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                result = await userManager.AddLoginAsync(user, loginInfo);
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    return View(userInfo);
+                }
+
+            }
+            return RedirectToAction(nameof(AccessDenied));
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

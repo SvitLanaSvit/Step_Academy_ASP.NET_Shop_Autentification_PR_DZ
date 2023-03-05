@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+var conficuration = builder.Configuration;
 builder.Services.AddAutoMapper(typeof(CategoryProfile));
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 //builder.Services.AddAutoMapper(typeof(PhotoProfile));
@@ -15,6 +16,22 @@ builder.Services.AddIdentity<User, IdentityRole>()
 string connStr = builder.Configuration.GetConnectionString("shopDb");
 builder.Services.AddDbContext<ShopDbContext>(options =>
 options.UseSqlServer(connStr));
+
+builder.Services.AddAuthentication().AddGoogle(options =>
+{
+    IConfigurationSection googleSection = conficuration.GetSection("Authentication:Google");
+    options.ClientId = googleSection.GetValue<string>("ClientId");
+    options.ClientSecret = googleSection["ClientSecret"];
+});
+builder.Services.AddAuthentication().AddFacebook(fbOptions =>
+{
+    IConfigurationSection facebookSection = conficuration.GetSection("Authentication:Facebook");
+    fbOptions.AppId = facebookSection["AppId"];
+    fbOptions.AppSecret = facebookSection["AppSecret"];
+});
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -30,9 +47,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

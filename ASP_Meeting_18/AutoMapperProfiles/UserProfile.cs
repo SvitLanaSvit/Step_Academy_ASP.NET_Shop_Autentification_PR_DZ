@@ -11,6 +11,7 @@ namespace ASP_Meeting_18.AutoMapperProfiles
             CreateMap<User, UserDTO>().ForMember(dest=>dest.Login, opt=>opt.MapFrom(src=>src.UserName)).ReverseMap();
             CreateMap<User, EditUserDTO>().ForMember(dest=>dest.Login, opt=>opt.MapFrom(src=>src.UserName)).ReverseMap();
             CreateMap<User, CreateUserDTO>().ForMember(dest => dest.Login, opt => opt.MapFrom(src => src.UserName)).ReverseMap();
+            CreateMap<User, DeleteUserDTO>().ForMember(dest => dest.Login, opt => opt.MapFrom(src => src.UserName)).ReverseMap();
             CreateMap<User, ChangePasswordDTO>().ReverseMap();
         }
     }
