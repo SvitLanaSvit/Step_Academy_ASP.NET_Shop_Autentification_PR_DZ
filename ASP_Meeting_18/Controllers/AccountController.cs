@@ -169,16 +169,15 @@ namespace ASP_Meeting_18.Controllers
 
         public async Task<IActionResult> GoogleRedirect()
         {
-            return await ExternalLoginRedirect("Google");
+            return await ExternalLoginRedirect();
         }
 
         public async Task<IActionResult> FacebookRedirect()
         {
-            return await ExternalLoginRedirect("Facebook");
+            return await ExternalLoginRedirect();
         }
 
-
-        private async Task<IActionResult> ExternalLoginRedirect(string providerName)
+        private async Task<IActionResult> ExternalLoginRedirect()
         {
             ExternalLoginInfo loginInfo = await signInManager.GetExternalLoginInfoAsync();
             if (loginInfo == null) return RedirectToAction("Login");
