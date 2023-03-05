@@ -103,70 +103,6 @@ namespace ASP_Meeting_18.Controllers
             return new ChallengeResult("Facebook", properties);
         }
 
-        //public async Task<IActionResult> GoogleRedirect()
-        //{
-        //    ExternalLoginInfo loginInfo = await signInManager.GetExternalLoginInfoAsync();
-        //    if (loginInfo == null) return RedirectToAction("Login");
-        //    var loginResult = await signInManager.ExternalLoginSignInAsync(
-        //        loginInfo.LoginProvider,
-        //        loginInfo.ProviderKey,
-        //        false);
-        //    string?[] userInfo =
-        //    {
-        //        loginInfo.Principal.FindFirst(ClaimTypes.Name)?.Value,
-        //        loginInfo.Principal.FindFirst(ClaimTypes.Email)?.Value
-        //    };
-        //    if(loginResult.Succeeded)
-        //    {
-        //        return View(userInfo);
-        //    }
-        //    User user = new User { UserName = userInfo[1], Email = userInfo[1] };
-        //    var result = await userManager.CreateAsync(user);
-        //    if(result.Succeeded)
-        //    {
-        //        result = await userManager.AddLoginAsync(user, loginInfo);
-        //        if (result.Succeeded)
-        //        {
-        //            await signInManager.SignInAsync(user, isPersistent: false);
-        //            return View(userInfo);
-        //        }
-
-        //    }
-        //    return RedirectToAction(nameof(AccessDenied));
-        //}
-
-        //public async Task<IActionResult> FacebookRedirect()
-        //{
-        //    ExternalLoginInfo loginInfo = await signInManager.GetExternalLoginInfoAsync();
-        //    if (loginInfo == null) return RedirectToAction("Login");
-        //    var loginResult = await signInManager.ExternalLoginSignInAsync(
-        //        loginInfo.LoginProvider,
-        //        loginInfo.ProviderKey,
-        //        false);
-        //    string?[] userInfo =
-        //    {
-        //        loginInfo.Principal.FindFirst(ClaimTypes.Name)?.Value,
-        //        loginInfo.Principal.FindFirst(ClaimTypes.Email)?.Value
-        //    };
-        //    if (loginResult.Succeeded)
-        //    {
-        //        return View(userInfo);
-        //    }
-        //    User user = new User { UserName = userInfo[1], Email = userInfo[1] };
-        //    var result = await userManager.CreateAsync(user);
-        //    if (result.Succeeded)
-        //    {
-        //        result = await userManager.AddLoginAsync(user, loginInfo);
-        //        if (result.Succeeded)
-        //        {
-        //            await signInManager.SignInAsync(user, isPersistent: false);
-        //            return View(userInfo);
-        //        }
-
-        //    }
-        //    return RedirectToAction(nameof(AccessDenied));
-        //}
-
         public async Task<IActionResult> GoogleRedirect()
         {
             return await ExternalLoginRedirect();
@@ -207,7 +143,6 @@ namespace ASP_Meeting_18.Controllers
             }
             return RedirectToAction(nameof(AccessDenied));
         }
-
 
         public IActionResult AccessDenied()
         {
