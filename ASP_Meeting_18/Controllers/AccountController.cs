@@ -3,6 +3,7 @@ using ASP_Meeting_18.Models.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace ASP_Meeting_18.Controllers
@@ -130,7 +131,7 @@ namespace ASP_Meeting_18.Controllers
             {
                 return View(userInfo);
             }
-            User user = new User { UserName = userInfo[1], Email = userInfo[1] };
+            User user = new User { UserName = userInfo[0], Email = userInfo[1] }; //?1
             var result = await userManager.CreateAsync(user);
             if (result.Succeeded)
             {
@@ -140,6 +141,15 @@ namespace ASP_Meeting_18.Controllers
                     await signInManager.SignInAsync(user, isPersistent: false);
                     return View(userInfo);
                 }
+            }
+            else
+            {
+                User? findedUser =
+                await userManager.FindByEmailAsync(userInfo[1]);
+                //.Users
+                //.FirstOrDefaultAsync(t => t.NormalizedEmail == user.Email!.ToUpper());
+                if (user != null)
+                    await userManager.AddLoginAsync(findedUser!, loginInfo);
             }
             return RedirectToAction(nameof(AccessDenied));
         }

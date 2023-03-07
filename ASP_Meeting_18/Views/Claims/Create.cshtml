@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label class="form-label" for="claimType">Claim Type</label>
+        <input type="text" class="form-control" name="claimType" id="claimType" required/>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="claimValue">Claim Value</label>
+        <input type="text" class="form-control" name="claimValue" id="claimValue" required/>
+    </div>
+    <input type="submit" value="Create" class="btn btn-primary"/>
+</form>
+<a asp-action="Index" class="btn btn-sm btn-secondary">Back to Claims List</a>

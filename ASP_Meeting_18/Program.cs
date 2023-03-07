@@ -29,6 +29,14 @@ builder.Services.AddAuthentication().AddFacebook(fbOptions =>
     fbOptions.AppId = facebookSection["AppId"];
     fbOptions.AppSecret = facebookSection["AppSecret"];
 });
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("FrameworkPolicy", policy =>
+    {
+        policy.RequireClaim("PrefferedFramework", new[] { "ASP.NET Core" });
+        policy.RequireRole("admin", "manager");
+    });
+});
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
