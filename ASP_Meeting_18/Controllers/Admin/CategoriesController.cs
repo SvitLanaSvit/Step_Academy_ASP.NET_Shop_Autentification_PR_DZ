@@ -10,6 +10,7 @@ using ASP_Meeting_18.Models.ViewModels.AdminViewModels.CategoryViewModels;
 using Microsoft.Extensions.Logging;
 using ASP_Meeting_18.Models.DTOs.CategoryDTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP_Meeting_18.Controllers.Admin
 {
@@ -74,6 +75,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             return View(vm);
         }
 
+        [Authorize(Roles = "manager, admin")]
         // GET: Categories/Create
         public IActionResult Create()
         {
@@ -112,6 +114,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "manager, admin")]
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -165,6 +168,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             return View(category);
         }
 
+        [Authorize(Roles = "manager, admin")]
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

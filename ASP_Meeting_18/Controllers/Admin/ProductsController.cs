@@ -12,6 +12,8 @@ using System.Drawing.Drawing2D;
 using ASP_Meeting_18.Models.DTOs.ProductDTOs;
 using AutoMapper;
 using ASP_Meeting_18.Models.DTOs.CategoryDTOs;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace ASP_Meeting_18.Controllers.Admin
 {
@@ -87,6 +89,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             return View(vm);
         }
 
+        [Authorize(Roles = "manager, admin")]
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -147,6 +150,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "manager, admin")]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -200,6 +204,7 @@ namespace ASP_Meeting_18.Controllers.Admin
             return View(product);
         }
 
+        [Authorize(Roles = "manager, admin")]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
