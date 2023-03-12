@@ -1,6 +1,8 @@
 
 using ASP_Meeting_18.AutoMapperProfiles;
 using ASP_Meeting_18.Data;
+using ASP_Meeting_18.Infrostructure.ModelBinderProviders;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +12,10 @@ var conficuration = builder.Configuration;
 builder.Services.AddAutoMapper(typeof(CategoryProfile));
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 //builder.Services.AddAutoMapper(typeof(PhotoProfile));
-builder.Services.AddControllersWithViews();
+
+builder.Services.AddControllersWithViews(optins =>
+optins.ModelBinderProviders.Insert(0, new CartModelBinderProvider()));
+
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ShopDbContext>();
 string connStr = builder.Configuration.GetConnectionString("shopDb");
@@ -57,6 +62,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

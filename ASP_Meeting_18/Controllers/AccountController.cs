@@ -131,7 +131,11 @@ namespace ASP_Meeting_18.Controllers
             {
                 return View(userInfo);
             }
-            User user = new User { UserName = userInfo[0], Email = userInfo[1] }; //?1
+            User user = new User 
+            { 
+                UserName = userInfo[0], 
+                Email = userInfo[1] 
+            }; //?1
             var result = await userManager.CreateAsync(user);
             if (result.Succeeded)
             {
@@ -149,7 +153,11 @@ namespace ASP_Meeting_18.Controllers
                 //.Users
                 //.FirstOrDefaultAsync(t => t.NormalizedEmail == user.Email!.ToUpper());
                 if (user != null)
+                {
                     await userManager.AddLoginAsync(findedUser!, loginInfo);
+                    await signInManager.SignInAsync(user, isPersistent: false); //
+                    return View(userInfo);
+                }
             }
             return RedirectToAction(nameof(AccessDenied));
         }

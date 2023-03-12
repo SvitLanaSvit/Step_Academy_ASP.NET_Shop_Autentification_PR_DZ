@@ -119,7 +119,15 @@ namespace ASP_Meeting_18.Controllers.Admin
                 }
                 return View(vm);
             }
-
+            Product? searchedProduct = await _context.Products.SingleOrDefaultAsync(
+                t => t.Title == vm.Product.Title && t.CategoryId == vm.Product.CategoryId);
+            if (searchedProduct != null)
+            {
+                searchedProduct.Count += vm.Product.Count;
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            
             _context.Add(vm.Product);
             await _context.SaveChangesAsync();
 

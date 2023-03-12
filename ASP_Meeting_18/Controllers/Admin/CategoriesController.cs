@@ -109,6 +109,10 @@ namespace ASP_Meeting_18.Controllers.Admin
                 ParentCategoryId = vm.ParentCategoryId
             };
             Category createdCategory = _mapper.Map<Category>(category);
+            if(createdCategory.ParentCategoryId == 0)
+            {
+                createdCategory.ParentCategoryId = null;
+            }
             _context.Add(createdCategory);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
