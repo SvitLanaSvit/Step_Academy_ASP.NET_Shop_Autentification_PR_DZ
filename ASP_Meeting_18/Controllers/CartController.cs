@@ -21,7 +21,7 @@ namespace ASP_Meeting_18.Controllers
         {
             
             //Cart cart = GetCart();
-            if (returnUrl != null)
+            if (returnUrl == null)
             {
                 returnUrl = Url.Action("Index", "Home");
             }

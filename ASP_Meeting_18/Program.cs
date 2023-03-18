@@ -4,6 +4,7 @@ using ASP_Meeting_18.Data;
 using ASP_Meeting_18.Infrostructure.ModelBinderProviders;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ optins.ModelBinderProviders.Insert(0, new CartModelBinderProvider()));
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ShopDbContext>();
+
 string connStr = builder.Configuration.GetConnectionString("shopDb");
 builder.Services.AddDbContext<ShopDbContext>(options =>
 options.UseSqlServer(connStr));
@@ -65,8 +67,52 @@ app.UseAuthorization();
 
 app.UseSession();
 
+
+//app.MapControllerRoute(
+//    name: "categoryProducts",
+//    pattern: "{category}/{page:int?}",
+//    defaults: new { controller = "Home", action = "Index" });
+
+//app.MapControllerRoute(
+//    name: "paged",
+//    pattern: "Page{page:int}",
+//    defaults: new { controller = "Home", action = "Index" });
+app.MapControllerRoute(
+    name: "root",
+ pattern: "/",
+ defaults: new { controller = "Home", action = "Index", page=1, category = (string)null }
+ );
+app.MapControllerRoute(
+     name: "Default",
+     pattern: "Page{page}",
+     defaults: new { controller = "Home", action = "Index", category = (string)null },
+     constraints: new { page = @"\d+" });
+app.MapControllerRoute(
+    name: "cart",
+    pattern: "cart/{action=Index}",
+    defaults: new { controller = "Cart"}
+ );
+app.MapControllerRoute(
+     name: "Category",
+     pattern: "{category:alpha}",
+     defaults: new { controller = "Home", action = "Index", page = 1 },
+
+     constraints: new { category = @"^(?!Admin$|Products$|Categories$|Photos$|Cart$|Account$|Claims$|Roles$|User$).*" }
+     );
+app.MapControllerRoute(
+    name: "CategoryPaging",
+ pattern: "{category:alpha}/Page{page}",
+ defaults: new { controller = "Home", action = "Index" },
+ constraints: new { page = @"\d+" });
+
+
+
+
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();
